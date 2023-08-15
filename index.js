@@ -1,8 +1,13 @@
 const express = require("express")
+const mongoose = require('mongoose');
 const app = express()
 const port = 3000
 
+const Resouce = require("./models/resource")
 
+require('dotenv').config()
+
+// mock database
 const urlTable = [
     {
         "resourceName": "asdf",
@@ -32,9 +37,23 @@ const urlTable = [
     }
 ]
 
+// middleware
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
+// database connection and start server
+mongoose.connect(process.env.MONGO_URL)
+const db = mongoose.connection
+db.on('error', error => console.error(error))
+db.once('open', () => {
+  console.log('Connected to Mongoose')
+  app.listen(process.env.PORT || port, () => {
+    	console.log(`Listening on port ${port}`)
+    })
+})
+
+
+// endpoints and controllers
 app.get("/urltable", (req, res) => {
 	console.log({ urlTable })
 	console.log(urlTable[0]?.feedback)
@@ -90,6 +109,3 @@ app.get("/", (req, res) => {
 	res.send("Hello World!")
 })
 
-app.listen(port, () => {
-	console.log(`Listening on port ${port}`)
-})
