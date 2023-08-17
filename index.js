@@ -84,9 +84,9 @@ app.post("/save/:str", async (req, res) => {
 			dislikes: !isLiked,
 			resourceRef: resource._id,
 		})
+		
 		resource.feedback.push(feedback)
 
-		// check if resource has feedback, else throw error
 		await feedback.save()
 		await resource.save()
 		res.send("saved: " + str)

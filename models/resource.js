@@ -14,6 +14,13 @@ const resourceSchema = new Schema({
 	],
 })
 
+resourceSchema.pre("save", function (next) {
+	if (this.feedback.length === 0) {
+		throw new Error("Resource requires at least one referenced feedback document")
+	}
+	next()
+})
+
 const Resource = mongoose.model("Resource", resourceSchema)
 
 module.exports = { Resource }
