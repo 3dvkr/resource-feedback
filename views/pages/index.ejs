@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../partials/head'); %>
+</head>
+
+<body class="container">
+    <header>
+        <%- include('../partials/header'); %>
+    </header>
+
+    <main>
+        <div class="container">
+            <h1>LRN</h1>
+
+            <form action="/resource" method="POST">
+                <fieldset>
+                    <legend>Add feedback for a resource</legend>
+                    <label class="choice-panel" for="url">
+                        <span>Resource Link</span>
+                        <button id="btn-paste" class="right" title="Paste from clipboard">
+                            <%- include('../partials/paste-svg'); %>
+                        </button>
+                    </label>
+                    <input id="url" name="url" type="text" />
+                    <label class="" for="classNumber">Class Number</label>
+                    <input id="classNumber" name="classNumber" type="text" />
+                    <!-- <label class="" for="classTitle">Class Name (optional)</label>
+                    <input id="classTitle" name="classTitle" type="text" /> -->
+                    <div class="full-grid-span choice-panel">
+                        <div class="choice-panel-option">
+                            <input id="goodClass" name="classRating" type="radio" value="1" />
+                            <label for="goodClass">👍</label>
+                        </div>
+                        <div class="choice-panel-option">
+                            <input id="badClass" name="classRating" type="radio" value="" />
+                            <label for="badClass">👎</label>
+                        </div>
+                    </div>
+                    <button class="center full-grid-span">Add feedback</button>
+                </fieldset>
+
+            </form>
+
+        </div>
+    </main>
+
+    <footer>
+        <%- include('../partials/footer'); %>
+    </footer>
+
+</body>
+
+</html>

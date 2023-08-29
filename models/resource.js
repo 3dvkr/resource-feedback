@@ -3,7 +3,7 @@ const { Schema } = mongoose
 
 const resourceSchema = new Schema({
 	name: { required: false, type: String, default: "" },
-	url: { required: true, type: String },
+	url: { required: true, type: String, unique: true },
 	format: { required: false, type: String },
 	feedback: [
 		{

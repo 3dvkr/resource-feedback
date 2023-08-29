@@ -1,41 +1,18 @@
+const path = require("path")
 const express = require("express")
 const mongoose = require("mongoose")
 const app = express()
 const port = 3000
 
 const { Resource, Feedback, Collective } = require("./models")
+const { resourceRoutes, feedbackRoutes, collectiveRoutes } = require("./routes")
 
 require("dotenv").config()
 
-// mock database
-const urlTable = [
-	{
-		resourceName: "asdf",
-		feedback: {
-			2: {
-				likes: 0,
-				dislikes: 2,
-			},
-			13: {
-				likes: 1,
-				dislikes: 0,
-			},
-			17: {
-				likes: 1,
-				dislikes: 0,
-			},
-			17.1: {
-				altName: "super review front end",
-				likes: 1,
-				dislikes: 0,
-			},
-			21: {
-				likes: 1,
-				dislikes: 0,
-			},
-		},
-	},
-]
+// view engine
+app.set("view engine", "ejs")
+app.use(express.static(path.join(__dirname, "public")))
+app.use("/static", express.static(path.join(__dirname, "public")))
 
 // middleware
 app.use(express.urlencoded({ extended: true }))
@@ -51,85 +28,28 @@ db.once("open", () => {
 		console.log(`Listening on port ${port}`)
 	})
 })
-
-// endpoints and controllers
-app.get("/urltable", (req, res) => {
-	console.log({ urlTable })
-	console.log(urlTable[0]?.feedback)
-	res.send(urlTable)
-})
-
-app.get("/n/:num", (req, res) => {
-	const num = req.params.num
-
-	res.send(urlTable[0].feedback[num])
-	// urlTable.filter()
-})
-
-app.get("/:str", (req, res) => {
-	const str = req.params.str
-	res.send("recieved: " + str)
-})
-
-app.post("/save/:str", async (req, res) => {
-	const { str } = req.params
-	const { classNum, isLiked } = req.body
-	try {
-        // TODO: add functionality to search if the resource is already created. Currently this controller only creates new resources
-		console.log({ str, classNum, isLiked }, typeof classNum, typeof isLiked)
-		const resource = new Resource({ url: str })
-		const feedback = new Feedback({
-			classNum,
-			likes: !!isLiked,
-			dislikes: !isLiked,
-			resourceRef: resource._id,
-		})
-		
-		resource.feedback.push(feedback)
-
-		await feedback.save()
-		await resource.save()
-		res.send("saved: " + str)
-	} catch (err) {
-		res.error(err)
+const logger = (str) => {
+	return (req, res, next) => {
+		console.log(str)
+		next()
 	}
-})
+}
 
-app.post("/:str", (req, res) => {
-	console.log("POST: ", req.params.str)
-	const { str } = req.params
-	console.log("BODY: ", req.body)
-	const { classNum, isLiked } = req.body
-	// if (!urlTable.hasOwnProperty(req.params.str)) {
-	// 	urlTable[req.params.str] = { classNum, isLiked };
-	// }
-	const resourceIdx = urlTable.findIndex((el) => el.resourceName === str)
-	if (resourceIdx === -1) {
-		urlTable.push({
-			resourceName: str,
-			feedback: {
-				[classNum]: { likes: Number(!!isLiked), dislikes: Number(!isLiked) },
-			},
-		})
+// main routes for app
+app.use("/resource", logger("resource bananas"), resourceRoutes)
+app.use("/feedback", logger("feedback pears"), feedbackRoutes)
+// app.use("/collective", collectiveRoutes)
+
+app.get("/:param*", (req, res) => {
+	const url = req.url.slice(1)
+	if (Number.isNaN(Number(url))) {
+		res.redirect(`/feedback/${url}`)
+		// /100devs/feedback/shayhowe.com
 	} else {
-		const votes = urlTable[resourceIdx].feedback[classNum]
-		if (votes) {
-			const { likes, dislikes } = votes
-			if (likes) {
-				urlTable[resourceIdx].feedback[classNum].likes += Number(!!isLiked)
-			} else if (dislikes) {
-				urlTable[resourceIdx].feedback[classNum].dislikes += Number(!isLiked)
-			}
-		} else {
-			urlTable[resourceIdx].feedback[classNum] = {
-				likes: Number(!!isLiked),
-				dislikes: Number(!isLiked),
-			}
-		}
+		res.redirect(`/resource/${url}`)
 	}
-	res.send("posted")
 })
 
 app.get("/", (req, res) => {
-	res.send("Hello World!")
+	res.render("pages/index", {})
 })

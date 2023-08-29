@@ -1,0 +1,98 @@
+/* General */
+* {
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+/* LAYOUT */
+.container {
+	max-width: 120ch;
+	margin: 0 auto;
+}
+.grid {
+	margin-inline: 2em;
+	display: grid;
+	gap: 1em 2em;
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 15ch), 1fr));
+}
+.card-stats { display: flex; gap: 0.5em;justify-content: space-around; align-items: center; }
+
+
+fieldset > * {
+	padding: 0.5em 0.75em;
+}
+button {
+	max-width: max-content;
+}
+fieldset > button {
+	margin-bottom: 0.25em;
+}
+
+fieldset {
+	padding: 0.5em 1.5em;
+	display: grid;
+	gap: 1em 2em;
+	grid-template-columns: minmax(auto, max-content) 1fr;
+}
+.full-grid-span {
+	grid-column: 1 / -1;
+}
+.left {
+	margin-right: auto;
+}
+.center {
+	margin-inline: auto;
+}
+.right {
+	margin-left: auto;
+}
+
+.choice-panel {
+	margin-inline: auto;
+	display: flex;
+	gap: calc(0.75em + 3vw);
+	align-items: center;
+}
+.choice-panel-option {
+	display: grid;
+}
+.choice-panel-option > * {
+	grid-row: 1 / -1;
+	grid-column: 1 / -1;
+}
+
+.choice-panel input[type="radio"] {
+	width: 0;
+	translate: 20px;
+}
+.choice-panel label {
+	padding: clamp(0.5em, 0.5em + 1vw, 1em) clamp(2em, 1.5em + 2vw, 3em);
+}
+
+/* STYLING */
+fieldset {
+	/* box-shadow: inset 0.5em 0.5em gold, inset -0.5em -0.5em crimson; */
+}
+legend {
+	background: black;
+	color: white;
+	border-radius: 3px;
+}
+.choice-panel label {
+	outline: 1px solid cadetblue;
+	background: white;
+}
+
+.choice-panel input:checked + label {
+	background: lightblue;
+}
+.choice-panel input:active + label,
+.choice-panel input:focus + label {
+	outline-width: 3px;
+}
+
+
+.card {
+	border: 1px solid black;
+	border-radius: 3px;
+	padding: 1em 2em;
+}

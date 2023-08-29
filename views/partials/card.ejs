@@ -1,0 +1,16 @@
+<div class="card">
+    <h3>
+        <%= feedback.resourceRef.name ? feedback.resourceRef.name : feedback.resourceRef.url.slice(0, 10) %>
+    </h3>
+    <p>
+       <a href=<%= feedback.resourceRef.url %>>Link</a>
+    </p>
+    <div class="card-stats">
+        <p class="card-stats_stat">👍
+            <%= feedback.likes %>
+        </p>
+        <p class="card-stats_stat"> 👎
+            <%= feedback.dislikes %>
+        </p>
+    </div>
+</div>
