@@ -7,12 +7,13 @@ const port = 3000
 const { Resource, Feedback, Collective } = require("./models")
 const { resourceRoutes, feedbackRoutes, collectiveRoutes } = require("./routes")
 
-require("dotenv").config()
+// if (process.env.NODE_ENV !== "production") {
+// 	require("dotenv").config()
+// }
 
 // view engine
-app.set("view engine", "ejs")
 app.use(express.static(path.join(__dirname, "public")))
-app.use("/static", express.static(path.join(__dirname, "public")))
+app.set("view engine", "ejs")
 
 // middleware
 app.use(express.urlencoded({ extended: true }))
@@ -24,8 +25,8 @@ const db = mongoose.connection
 db.on("error", (error) => console.error(error))
 db.once("open", () => {
 	console.log("Connected to Mongoose")
-	app.listen(process.env.PORT || port, () => {
-		console.log(`Listening on port ${port}`)
+	app.listen(process.env.PORT, () => {
+		console.log(`Listening on port ${process.env.PORT}`)
 	})
 })
 const logger = (str) => {
@@ -40,7 +41,9 @@ app.use("/resource", logger("resource bananas"), resourceRoutes)
 app.use("/feedback", logger("feedback pears"), feedbackRoutes)
 // app.use("/collective", collectiveRoutes)
 
-app.get("/:param*", (req, res) => {
+app.get("/:param*", (req, res, next) => {
+	const { param } = req.params
+	console.log("params idk ", { param })
 	const url = req.url.slice(1)
 	if (Number.isNaN(Number(url))) {
 		res.redirect(`/feedback/${url}`)
