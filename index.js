@@ -2,14 +2,14 @@ const path = require("path")
 const express = require("express")
 const mongoose = require("mongoose")
 const app = express()
-const port = 3000
+const port = process.env.PORT || 3000
 
 const { Resource, Feedback, Collective } = require("./models")
 const { resourceRoutes, feedbackRoutes, collectiveRoutes } = require("./routes")
-
-// if (process.env.NODE_ENV !== "production") {
-// 	require("dotenv").config()
-// }
+console.log({port}, process.env.PORT)
+if (process.env.NODE_ENV !== "production") {
+	require("dotenv").config()
+}
 
 // view engine
 app.use(express.static(path.join(__dirname, "public")))
@@ -25,8 +25,8 @@ const db = mongoose.connection
 db.on("error", (error) => console.error(error))
 db.once("open", () => {
 	console.log("Connected to Mongoose")
-	app.listen(process.env.PORT, () => {
-		console.log(`Listening on port ${process.env.PORT}`)
+	app.listen(port, () => {
+		console.log(`Listening on port ${port}`)
 	})
 })
 const logger = (str) => {
