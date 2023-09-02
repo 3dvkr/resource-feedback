@@ -1,8 +1,9 @@
 const path = require("path")
 const express = require("express")
 const mongoose = require("mongoose")
+const cors = require("cors")
 const app = express()
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 8080
 
 const { Resource, Feedback, Collective } = require("./models")
 const { resourceRoutes, feedbackRoutes, collectiveRoutes } = require("./routes")
@@ -18,6 +19,7 @@ app.set("view engine", "ejs")
 // middleware
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
+app.use(cors())
 
 // database connection and start server
 mongoose.connect(process.env.MONGO_URL)

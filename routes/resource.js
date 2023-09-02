@@ -10,7 +10,6 @@ router.get("/", (req, res) => {
 router.get("/:classNum", async (req, res) => {
 	// lrn.cyclic.app/resource/classNum
 	const { classNum } = req.params
-	// console.log("getting a feedback doc: ", classNum, typeof classNum)
 	try {
 		const feedbackDocs = await Feedback.find({ classNum })
 			.populate({
@@ -20,14 +19,14 @@ router.get("/:classNum", async (req, res) => {
 			.select("likes dislikes resourceRef")
 			.lean()
 
-		res.render("pages/resources", { feedbackDocs })
+		// res.render("pages/resources", { feedbackDocs })
+		res.send(feedbackDocs)
 	} catch (err) {
 		console.log(err)
-		res.send("error")
+		res.send(err)
 	}
 })
 
-// TODO: remove this after switching to React?
 router.post("/", async (req, res) => {
 	const { url, classNumber, classRating } = req.body
 	console.log("posting feedback: ", { url, classNumber, classRating })
@@ -42,11 +41,13 @@ router.post("/", async (req, res) => {
 		}
 
 		// find feedback for the class and resource
-		let feedback = !isNewResource && await Feedback.findOne({
-			classNum: classNumber,
-			resourceRef: resource._id,
-		})
-		
+		let feedback =
+			!isNewResource &&
+			(await Feedback.findOne({
+				classNum: classNumber,
+				resourceRef: resource._id,
+			}))
+
 		if (!feedback) {
 			feedback = new Feedback({
 				classNum: classNumber,
@@ -63,9 +64,10 @@ router.post("/", async (req, res) => {
 		await feedback.save()
 		await resource.save()
 
-		res.redirect("/" + classNumber)
+		// res.redirect("/" + classNumber)
+		res.send({message: "success"})
 	} catch (err) {
-		res.send("ERROR: " + err.message)
+		res.send(err)
 	}
 })
 
