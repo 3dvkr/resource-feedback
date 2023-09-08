@@ -1,0 +1,123 @@
+body {
+	margin: 0;
+	padding: 0;
+	font-family: Arial, sans-serif;
+	background-color: #f0f0f0;
+	color: #333;
+	line-height: 1.6;
+}
+
+.container {
+	max-width: 120ch;
+	margin: 0 auto;
+	padding: 2rem 0.5rem;
+}
+
+.card {
+	border: 1px solid black;
+	border-radius: 3px;
+	padding: 1em 2em;
+	margin: 1em 0;
+}
+header {
+    padding-top: 0.5em;
+    padding-bottom: 1em;
+    background-color: #f0f0f0;
+	position: sticky;
+	top: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.info > *, form {
+	margin-top: 2rem;
+	margin-bottom: 1rem;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	line-height: 1;
+}
+p {
+	letter-spacing: 0.15ch;
+}
+ul,
+ol {
+	margin-top: 1.5rem;
+	margin-bottom: 1.5rem;
+}
+
+a {
+	color: #007bff;
+}
+
+button,
+.btn {
+	padding: 1rem 2rem;
+    text-decoration: none;
+    color: #f0f0f0;
+	background-color: #333;
+    border-radius: 3px;
+    border: none;
+}
+
+.emph {
+	font-weight: bold;
+}
+
+.choice-panel {
+	margin-inline: auto;
+	display: flex;
+	gap: calc(0.75em + 3vw);
+	align-items: center;
+    justify-content: center;
+}
+.choice-panel-option {
+	display: grid;
+}
+.choice-panel-option > * {
+	grid-row: 1 / -1;
+	grid-column: 1 / -1;
+}
+
+.choice-panel input[type="radio"] {
+	width: 0;
+	translate: 20px;
+}
+.choice-panel input[type="radio"]:focus, .choice-panel input[type="radio"]:active {
+    outline: none;
+}
+.choice-panel label {
+	padding: clamp(0.5em, 0.5em + 1vw, 1em) clamp(2em, 1.5em + 2vw, 3em);
+}
+
+.choice-panel label {
+	outline: 1px solid blue;
+	background: white;
+}
+
+.choice-panel input:checked + label {
+	background: lightblue;
+}
+.choice-panel input:active + label,
+.choice-panel input:focus + label {
+	outline-width: 3px;
+}
+
+form {
+	padding: 0.5em 1.5em;
+	display: grid;
+	gap: 1em 2em;
+	grid-template-columns: minmax(auto, max-content) 1fr;
+}
+
+.full-grid-span {
+	grid-column: 1 / -1;
+}

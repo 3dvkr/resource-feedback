@@ -21,11 +21,6 @@ router.get("/:path*", async (req, res) => {
 	}
 })
 
-router.post("/:url*", async (req, res) => {
-	const { url } = req.params
-	const {} = req.body
-	// there's a roughed out controller in controllers/index.js
-})
 
 module.exports = {
 	router,

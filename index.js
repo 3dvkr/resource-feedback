@@ -1,23 +1,27 @@
 const path = require("path")
 const express = require("express")
 const mongoose = require("mongoose")
+const cors = require("cors")
 const app = express()
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 8080
 
-const { Resource, Feedback, Collective } = require("./models")
 const { resourceRoutes, feedbackRoutes, collectiveRoutes } = require("./routes")
-console.log({port}, process.env.PORT)
-if (process.env.NODE_ENV !== "production") {
-	require("dotenv").config()
-}
 
+if (process.env.NODE_ENV !== "production") {
+	console.log("dev mode")
+	const logger = require("morgan")
+	require("dotenv").config()
+	app.use(logger("dev"))
+}
 // view engine
-app.use(express.static(path.join(__dirname, "public")))
-app.set("view engine", "ejs")
+app.use(express.static(path.join(__dirname, "frontend", "dist")))
+// app.use(express.static(path.join(__dirname, "public")))
+// app.set("view engine", "ejs")
 
 // middleware
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
+app.use(cors())
 
 // database connection and start server
 mongoose.connect(process.env.MONGO_URL)
@@ -37,11 +41,11 @@ const logger = (str) => {
 }
 
 // main routes for app
-app.use("/resource", logger("resource bananas"), resourceRoutes)
-app.use("/feedback", logger("feedback pears"), feedbackRoutes)
+app.use("/api/resource", logger("resource bananas"), resourceRoutes)
+app.use("/api/feedback", logger("feedback pears"), feedbackRoutes)
 // app.use("/collective", collectiveRoutes)
 
-app.get("/:param*", (req, res, next) => {
+app.get("/api/:param*", (req, res, next) => {
 	const { param } = req.params
 	console.log("params idk ", { param })
 	const url = req.url.slice(1)
@@ -53,6 +57,10 @@ app.get("/:param*", (req, res, next) => {
 	}
 })
 
-app.get("/", (req, res) => {
-	res.render("pages/index", {})
+// app.get("/", (req, res) => {
+// 	res.render("pages/index", {})
+// })
+
+app.get("*", (req, res) => {
+	res.sendFile(path.join(__dirname, "frontend", "dist", "index.html"))
 })
