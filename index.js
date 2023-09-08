@@ -13,10 +13,10 @@ if (process.env.NODE_ENV !== "production") {
 	require("dotenv").config()
 	app.use(logger("dev"))
 }
-
 // view engine
-app.use(express.static(path.join(__dirname, "public")))
-app.set("view engine", "ejs")
+app.use(express.static(path.join(__dirname, "frontend", "dist")))
+// app.use(express.static(path.join(__dirname, "public")))
+// app.set("view engine", "ejs")
 
 // middleware
 app.use(express.urlencoded({ extended: true }))
@@ -57,6 +57,10 @@ app.get("/api/:param*", (req, res, next) => {
 	}
 })
 
-app.get("/", (req, res) => {
-	res.render("pages/index", {})
+// app.get("/", (req, res) => {
+// 	res.render("pages/index", {})
+// })
+
+app.get("*", (req, res) => {
+	res.sendFile(path.join(__dirname, "frontend", "dist", "index.html"))
 })
