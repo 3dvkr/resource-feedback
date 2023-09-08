@@ -1,17 +1,18 @@
-import { Outlet } from "react-router-dom"
+import { Outlet, Link } from "react-router-dom"
+import "../styles.css"
 
 export default function Root() {
 	return (
-		<div>
+		<div className="container">
 			<header>
 				<nav>
-                    <p>nav</p>
+					<Link className="btn" to="/">Home</Link>
 				</nav>
 			</header>
 			<main>
 				<Outlet />
 			</main>
-			<footer>footer</footer>
+			<footer>Please note this app is being developed and tested.</footer>
 		</div>
 	)
 }

@@ -1,26 +1,37 @@
-import { useLoaderData, } from "react-router-dom"
+import { useLoaderData, useParams } from "react-router-dom"
+
+import Picker from "../components/picker"
 
 export default function Resources() {
+	const { "*": classNumber } = useParams()
 	const resources = useLoaderData()
-	if (Array.isArray(resources) && resources.length === 0) {
-		return <p>No resources found</p>
-	}
+	const foundResources = Array.isArray(resources) && resources.length > 0
+
 	return (
 		<div>
-			{resources.map((r, i) => (
-				<div key={i} style={{ border: "1px solid black", padding: "1em 2em", margin: "1em" }}>
-					<p>{r?.resourceRef?.name || r?.resourceRef?.url}</p>
-					<p>likes: {r.likes}</p>
-					<p>dislikes: {r.dislikes}</p>
-				</div>
-			))}
+			<h1>100Devs Resources</h1>
+			<Picker num={+classNumber} />
+			{foundResources ? (
+				resources.map((r, i) => (
+					<div
+						key={i}
+						className="card"
+					>
+						<p>{r?.resourceRef?.name || r?.resourceRef?.url}</p>
+						<p>likes: {r.likes}</p>
+						<p>dislikes: {r.dislikes}</p>
+					</div>
+				))
+			) : (
+				<p>No resources found</p>
+			)}
 		</div>
 	)
 }
 
 export async function loader({ params }) {
 	const { "*": classNumber } = params
-	const api = await fetch("http://localhost:8080/resource/" + classNumber)
+	const api = await fetch("/api/resource/" + classNumber)
 	const response = await api.json()
 	return response
 }

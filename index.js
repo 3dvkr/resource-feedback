@@ -5,11 +5,13 @@ const cors = require("cors")
 const app = express()
 const port = process.env.PORT || 8080
 
-const { Resource, Feedback, Collective } = require("./models")
 const { resourceRoutes, feedbackRoutes, collectiveRoutes } = require("./routes")
-console.log({port}, process.env.PORT)
+
 if (process.env.NODE_ENV !== "production") {
+	console.log("dev mode")
+	const logger = require("morgan")
 	require("dotenv").config()
+	app.use(logger("dev"))
 }
 
 // view engine
@@ -39,11 +41,11 @@ const logger = (str) => {
 }
 
 // main routes for app
-app.use("/resource", logger("resource bananas"), resourceRoutes)
-app.use("/feedback", logger("feedback pears"), feedbackRoutes)
+app.use("/api/resource", logger("resource bananas"), resourceRoutes)
+app.use("/api/feedback", logger("feedback pears"), feedbackRoutes)
 // app.use("/collective", collectiveRoutes)
 
-app.get("/:param*", (req, res, next) => {
+app.get("/api/:param*", (req, res, next) => {
 	const { param } = req.params
 	console.log("params idk ", { param })
 	const url = req.url.slice(1)

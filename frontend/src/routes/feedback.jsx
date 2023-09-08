@@ -1,17 +1,25 @@
+import { useState } from "react"
 import { useParams, Form, redirect } from "react-router-dom"
 
 export default function Feedback() {
 	const { "*": resourceUrl } = useParams()
+	const [text, setText] = useState(resourceUrl || "")
+
 	return (
 		<Form method="post">
-			<label htmlFor="resourceUrl">Class Number</label>
+			<label htmlFor="resourceUrl" className="choice-panel">
+				Resource Url
+			</label>
 			<input
-				type="text"
+				type="url"
 				name="resourceUrl"
 				id="resourceUrl"
-				value={resourceUrl}
+				value={text}
+				onChange={(e) => setText(e.target.value)}
 			/>
-			<label htmlFor="classNumber">Class</label>
+			<label htmlFor="classNumber" className="choice-panel">
+				Class
+			</label>
 			<input
 				type="number"
 				name="classNumber"
@@ -19,29 +27,35 @@ export default function Feedback() {
 				min="0"
 				max="70"
 			/>
-			<div>
-				<div>
+			<div className="full-grid-span choice-panel">
+				<div className="choice-panel-option">
 					<input id="goodClass" name="classRating" type="radio" value="1" />
 					<label htmlFor="goodClass">👍</label>
 				</div>
-				<div>
+				<div className="choice-panel-option">
 					<input id="badClass" name="classRating" type="radio" value="" />
 					<label htmlFor="badClass">👎</label>
 				</div>
 			</div>
-			<button>Submit</button>
+			<div className="full-grid-span choice-panel">
+				<button className="btn">Submit</button>
+			</div>
 		</Form>
 	)
 }
 
 export async function action({ request }) {
 	let formData = await request.formData()
+	const url = formData.get("resourceUrl"),
+		classNumber = formData.get("classNumber"),
+		classRating = formData.get("classRating")
+
 	const submitBody = {
-		url: formData.get("resourceUrl"),
-		classNumber: formData.get("classNumber"),
-		classRating: formData.get("classRating"),
+		url,
+		classNumber,
+		classRating,
 	}
-	const response = await fetch("http://localhost:8080/resource/", {
+	const response = await fetch("/api/resource/", {
 		method: "POST",
 		body: JSON.stringify(submitBody),
 		headers: {
@@ -49,7 +63,7 @@ export async function action({ request }) {
 		},
 	})
 	if (!response.ok) {
-		throw { message: "could not save feedback", status: 500 }
-	} 
+		throw { message: "Could not save feedback", status: 500 }
+	}
 	return redirect("/" + submitBody.classNumber)
 }
