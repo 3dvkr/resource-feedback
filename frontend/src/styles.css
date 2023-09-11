@@ -133,3 +133,8 @@ form {
 .full-grid-span {
 	grid-column: 1 / -1;
 }
+
+.font-code {
+	font-family: monospace;
+	font-weight: bold;
+}

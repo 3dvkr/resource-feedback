@@ -1,6 +1,8 @@
 import { useState } from "react"
 import { useParams, Form, redirect } from "react-router-dom"
 
+import { isURL } from "validator"
+
 export default function Feedback() {
 	const { "*": resourceUrl } = useParams()
 	const [text, setText] = useState(resourceUrl || "")
@@ -11,7 +13,7 @@ export default function Feedback() {
 				Resource Url
 			</label>
 			<input
-				type="url"
+				type="text"
 				name="resourceUrl"
 				id="resourceUrl"
 				value={text}
@@ -29,11 +31,11 @@ export default function Feedback() {
 			/>
 			<div className="full-grid-span choice-panel">
 				<div className="choice-panel-option">
-					<input id="goodClass" name="classRating" type="radio" value="1" />
+					<input id="goodClass" name="classRating" type="radio" value="up" />
 					<label htmlFor="goodClass">👍</label>
 				</div>
 				<div className="choice-panel-option">
-					<input id="badClass" name="classRating" type="radio" value="" />
+					<input id="badClass" name="classRating" type="radio" value="down" />
 					<label htmlFor="badClass">👎</label>
 				</div>
 			</div>
@@ -47,13 +49,25 @@ export default function Feedback() {
 export async function action({ request }) {
 	let formData = await request.formData()
 	const url = formData.get("resourceUrl"),
-		classNumber = formData.get("classNumber"),
+		classNumber = +formData.get("classNumber"),
 		classRating = formData.get("classRating")
+
+	if (!isURL(url)) {
+		throw new Error("Invalid url")
+	}
+	let normalizedRating
+	if (classRating === "up") {
+		normalizedRating = 1
+	} else if (classRating === "down") {
+		normalizedRating = 0
+	} else {
+		throw new Error("Unexpected value submitted.")
+	}
 
 	const submitBody = {
 		url,
 		classNumber,
-		classRating,
+		classRating: normalizedRating,
 	}
 	const response = await fetch("/api/resource/", {
 		method: "POST",

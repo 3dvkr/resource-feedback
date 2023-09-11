@@ -18,7 +18,7 @@ router.get("/*", async (req, res) => {
 
 		res.send(resourceFeedback)
 	} catch (err) {
-		console.log(err)
+		console.error(err)
 		res.send("error")
 	}
 })
