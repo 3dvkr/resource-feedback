@@ -18,25 +18,22 @@ router.get("/:classNum", async (req, res) => {
 			})
 			.select("likes dislikes resourceRef")
 			.lean()
-
-		// res.render("pages/resources", { feedbackDocs })
 		res.send(feedbackDocs)
 	} catch (err) {
-		console.log(err)
+		console.error(err)
 		res.send(err)
 	}
 })
 
 router.post("/", async (req, res) => {
 	const { url, classNumber, classRating } = req.body
-	console.log("posting feedback: ", { url, classNumber, classRating })
 	try {
 		// find resource with url
 		let resource = await Resource.findOne({ url }).select("_id feedback")
 		const isNewResource = !resource
-		console.log("found resource: ", resource)
+		
 		// if not found, create the resource
-		if (!resource) {
+		if (isNewResource) {
 			resource = new Resource({ url })
 		}
 
@@ -51,20 +48,19 @@ router.post("/", async (req, res) => {
 		if (!feedback) {
 			feedback = new Feedback({
 				classNum: classNumber,
-				likes: !!classRating,
-				dislikes: !classRating,
+				likes: classRating ? 1 : 0,
+				dislikes: !classRating ? 1 : 0,
 				resourceRef: resource._id,
 			})
 			resource.feedback.push(feedback)
 		} else {
-			feedback.likes += !!classRating
-			feedback.dislikes += !classRating
+			feedback.likes += classRating ? 1 : 0
+			feedback.dislikes += !classRating ? 1 : 0
 		}
 
 		await feedback.save()
 		await resource.save()
 
-		// res.redirect("/" + classNumber)
 		res.send({message: "success"})
 	} catch (err) {
 		res.send(err)
