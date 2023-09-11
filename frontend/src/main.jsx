@@ -9,6 +9,7 @@ import Home from "./routes/home.jsx"
 import Selector from "./routes/selector"
 import Resources, { loader as resourcesLoader } from "./routes/resources"
 import Feedback, { action as feedbackAction } from "./routes/feedback.jsx"
+import FeedbackResource, { loader as feedbackResourceLoader } from "./routes/feedback-resource.jsx"
 
 const router = createBrowserRouter([
 	{
@@ -21,6 +22,11 @@ const router = createBrowserRouter([
 				path: "/resources/*",
 				element: <Resources />,
 				loader: resourcesLoader,
+			},
+			{
+				path: "/fb/resource/*",
+				element: <FeedbackResource />,
+				loader: feedbackResourceLoader,
 			},
 			{
 				path: "/fb/*",
