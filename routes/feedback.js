@@ -16,7 +16,7 @@ router.get("/:path*", async (req, res) => {
 		// form would only have url (filled in), class number, and isLiked
 		res.send({ foundResource: true, name: resource.resourceName })
 	} catch (err) {
-		console.log(err)
+		console.error(err)
 		res.send("error")
 	}
 })
