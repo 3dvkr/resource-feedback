@@ -15,8 +15,6 @@ if (process.env.NODE_ENV !== "production") {
 }
 // view engine
 app.use(express.static(path.join(__dirname, "frontend", "dist")))
-// app.use(express.static(path.join(__dirname, "public")))
-// app.set("view engine", "ejs")
 
 // middleware
 app.use(express.urlencoded({ extended: true }))
@@ -33,16 +31,10 @@ db.once("open", () => {
 		console.log(`Listening on port ${port}`)
 	})
 })
-const logger = (str) => {
-	return (req, res, next) => {
-		console.log(str)
-		next()
-	}
-}
 
 // main routes for app
-app.use("/api/resource", logger("resource bananas"), resourceRoutes)
-app.use("/api/feedback", logger("feedback pears"), feedbackRoutes)
+app.use("/api/resource", resourceRoutes)
+app.use("/api/feedback", feedbackRoutes)
 // app.use("/collective", collectiveRoutes)
 
 app.get("/api/:param*", (req, res, next) => {
@@ -56,10 +48,6 @@ app.get("/api/:param*", (req, res, next) => {
 		res.redirect(`/resource/${url}`)
 	}
 })
-
-// app.get("/", (req, res) => {
-// 	res.render("pages/index", {})
-// })
 
 app.get("*", (req, res) => {
 	res.sendFile(path.join(__dirname, "frontend", "dist", "index.html"))
