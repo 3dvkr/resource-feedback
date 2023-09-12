@@ -23,9 +23,15 @@ export default function Main() {
 				</Link>
 			</p>
 
-			<h2>Add a resource/feedback</h2>
+			<h2>Pay it forward</h2>
 			<p>
-				<Link to={"/fb"}>Add feedback for a resource</Link>
+				Add feedback on a resource{" "}<Link to={"/fb"}>with a form</Link>, or using your address bar: <span className="font-code">
+					https://
+					<span style={{ background: "yellow", padding: "0 0.25em" }}>
+						{url}/
+					</span>
+					{"<url>"}
+				</span>.
 			</p>
 			<p>
 				e.g.{" "}
@@ -34,7 +40,7 @@ export default function Main() {
 					<span style={{ background: "yellow", padding: "0 0.25em" }}>
 						{url}/
 					</span>
-					{"<url>"}
+					{"www.google.com"}
 				</span>
 			</p>
 		</div>
