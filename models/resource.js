@@ -4,6 +4,7 @@ const { Schema } = mongoose
 const resourceSchema = new Schema({
 	name: { required: false, type: String, default: "" },
 	url: { required: true, type: String, unique: true },
+	description: { required: false, type: String },
 	format: { required: false, type: String },
 	feedback: [
 		{

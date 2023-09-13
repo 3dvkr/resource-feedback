@@ -1,5 +1,8 @@
 const express = require("express")
+const ogs = require("open-graph-scraper")
 const router = express.Router()
+
+const { getUrlFormat } = require("../utils/url-format")
 
 const { Resource, Feedback, Collective } = require("../models")
 
@@ -14,7 +17,7 @@ router.get("/:classNum", async (req, res) => {
 		const feedbackDocs = await Feedback.find({ classNum })
 			.populate({
 				path: "resourceRef",
-				select: "url name",
+				select: "url name format description",
 			})
 			.select("likes dislikes resourceRef")
 			.lean()
@@ -27,14 +30,26 @@ router.get("/:classNum", async (req, res) => {
 
 router.post("/", async (req, res) => {
 	const { url, classNumber, classRating } = req.body
+
 	try {
 		// find resource with url
 		let resource = await Resource.findOne({ url }).select("_id feedback")
 		const isNewResource = !resource
-		
+
 		// if not found, create the resource
 		if (isNewResource) {
-			resource = new Resource({ url })
+			const data = await ogs({ url })
+			const { error, result } = data
+			if (!error) {
+				resource = new Resource({
+					url,
+					name: result.ogTitle,
+					description: result.ogDescription.slice(0, 50).trim(),
+					format: getUrlFormat(result.ogType),
+				})
+			} else {
+				resource = new Resource({ url })
+			}
 		}
 
 		// find feedback for the class and resource
@@ -61,7 +76,7 @@ router.post("/", async (req, res) => {
 		await feedback.save()
 		await resource.save()
 
-		res.send({message: "success"})
+		res.send({ message: "success" })
 	} catch (err) {
 		res.send(err)
 	}
