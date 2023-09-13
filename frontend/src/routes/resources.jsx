@@ -2,6 +2,23 @@ import { useLoaderData, useParams } from "react-router-dom"
 
 import Picker from "../components/picker"
 
+function resourceHeader(resource) {
+	let str = ""
+	if (resource) {
+		if (resource.name) {
+			str += resource.name
+		} else {
+			str += "Resource"
+		}
+		if (resource.format) {
+			str += " (" + resource.format + ")"
+		}
+		return str
+	} else {
+		return null
+	}
+}
+
 export default function Resources() {
 	const { "*": classNumber } = useParams()
 	const resources = useLoaderData()
@@ -13,11 +30,13 @@ export default function Resources() {
 			<Picker num={+classNumber} />
 			{foundResources ? (
 				resources.map((r, i) => (
-					<div
-						key={i}
-						className="card"
-					>
-						<p>{r?.resourceRef?.name || r?.resourceRef?.url}</p>
+					<div key={i} className="card">
+						<h2>{resourceHeader(r.resourceRef)}</h2>
+						<p>{r?.resourceRef?.url}</p> {/* TODO: remove this line for production */}
+						<p>
+							<a href={r?.resourceRef?.url}>Link</a>
+						</p>
+						{r?.resourceRef?.description && <p>{r?.resourceRef?.description}{"..."}</p>}
 						<p>likes: {r.likes}</p>
 						<p>dislikes: {r.dislikes}</p>
 					</div>
