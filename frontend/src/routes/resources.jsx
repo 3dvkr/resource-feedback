@@ -36,7 +36,7 @@ export default function Resources() {
 						<p>
 							<a href={r?.resourceRef?.url}>Link</a>
 						</p>
-						<p>{r?.resourceRef?.description}{"..."}</p>
+						{r?.resourceRef?.description && <p>{r?.resourceRef?.description}{"..."}</p>}
 						<p>likes: {r.likes}</p>
 						<p>dislikes: {r.dislikes}</p>
 					</div>
